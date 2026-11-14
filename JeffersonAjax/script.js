@@ -27,17 +27,17 @@ formulario.addEventListener("submit", (event) => {
         .then((dados) => {
             let pokemon = dados;
 
-            resultado.querySelector('#pokemon-nome').innerText = pokemon.name
+            let nome = pokemon.name
 
-            resultado.querySelector('#pokemon-nome').innerText = pokemon.name
+            nome = nome.charAt(0).toUpperCase() + nome.slice(1);
+
+            resultado.querySelector('#pokemon-nome').innerText = nome
 
             resultado.querySelector('#pokemon-foto img').src = pokemon.sprites.other["official-artwork"].front_default
 
-            resultado.querySelector('#pokemon-num').innerText = pokemon.id
+            resultado.querySelector('#pokemon-num').innerText = '#' + pokemon.id
 
             const tipos = document.querySelector("#pokemon-tipo")
-
-            let i = 0
 
             tipos.replaceChildren()
 
@@ -45,50 +45,64 @@ formulario.addEventListener("submit", (event) => {
 
                 const tipo = document.createElement('span')
 
-                tipo.innerText = pokemon.types[i].type.name
+                tipo.innerText = element.type.name
+                tipo.classList.add(element.type.name)
 
                 tipos.appendChild(tipo)
-
-                i++
                 
             });
 
-            resultado.querySelector('#altura').innerText = pokemon.height/10
+            resultado.querySelector('#Altura').innerText = pokemon.height/10 + ' m'
 
-            resultado.querySelector('#peso').innerText = pokemon.weight/10
+            resultado.querySelector('#Peso').innerText = pokemon.weight/10 + ' kg'
 
             const atributos = document.querySelector("#pokemon-atributos")
-
-            i = 0
 
             atributos.replaceChildren()
 
             pokemon.stats.forEach(element => {
-                if( i == 0 || i == 1 || i == 2 || i == 5){
+                if( element.stat.name === 'hp' || element.stat.name === 'attack' || element.stat.name === 'defense' || element.stat.name === 'speed'){
 
-                    const atributo = createElement('div')
+                    const atributo = document.createElement('div')
 
-                    const atributoNome = createElememt('span')
+                    atributo.classList.add('pokemon-atributo')
 
-                    const atributoValor = createElement('strong')
+                    const atributoNome = document.createElement('span')
 
-                    const atributoBarra = createElememt('progress')
+                    const atributoValor = document.createElement('strong')
 
-                    atributoNome.innerText = pokemon.stats[i].stats.name
+                    const atributoBarra = document.createElement('progress')
 
-                    atributoValor.innerText = pokemon.stats[i].base_stat
+                    atributo.classList.add(element.stat.name)
+
+                    atributoNome.innerText = element.stat.name + ':'
+
+                    atributoValor.innerText = element.base_stat
 
                     atributoBarra.max = 255
 
-                    atributoBarra.value = pokemon.stats[i].base_stat
+                    atributoBarra.value = element.base_stat
+
+                    atributo.appendChild(atributoNome)
+                    atributo.appendChild(atributoValor)
+                    atributo.appendChild(atributoBarra)
+
+                    atributos.appendChild(atributo)
 
                 }
+
+
+
             });
 
-
+            resultado.querySelector('#status').classList.remove('invisivel')
+            
             console.log(dados);
         })
         .catch((erro) => {
+
+            resultado.querySelector('#pokemon-nome').innerText = 'Erro pokemon ' + formulario.elements["Nome"].value.trim() + ' não encontrado...';
+
             console.log(erro.message);
         });
 });
